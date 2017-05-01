@@ -114,7 +114,7 @@ public class Url {
         return String.format(mUrl.get("listing").get("threadList"), mBoardName);
     }
 
-    public String getAPIThreadUrl(String threadId){
+    public String getApiThreadUrl(String threadId){
         /*
         Create API thread URL
          */
@@ -143,6 +143,9 @@ public class Url {
     }
 
     public Map<String, Map<String,String>> getUrl(){
+        /*
+        Retrieve Hashtable of URLs.
+         */
         return mUrl;
     }
 
