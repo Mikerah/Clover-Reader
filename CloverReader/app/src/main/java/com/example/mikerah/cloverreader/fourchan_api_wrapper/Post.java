@@ -15,15 +15,17 @@ public class Post {
     private String mPostSubject;
     private String mPostComment;
     private Boolean mIsOP;
+    private Boolean mHasFile;
     private String mUrl;
     private Thread mThread;
     private JSONObject mData;
     private Url mUrlGenerator;
+    private File mFile;
 
     private Post(Thread thread, JSONObject data){
         mThread = thread;
         mData = data;
-        mUrlGenerator = Url(this.mThread.getBoardName());
+        mUrlGenerator = Url(this.mThread.getBoard().getBoardName());
         mIsOP = mThread.getTopic().equals(this);
         try {
             mPostId = Integer.parseInt(mData.getString("no"));
@@ -32,12 +34,15 @@ public class Post {
             mPosterEmail = mData.getString("email");
             mPostSubject = mData.getString("sub");
             mPostComment = mData.getString("com");
+            mHasFile = mData.getBoolean("filename");
+
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        mUrlGenerator = String.format("%s#%i", mThread.getUrl(),mPostId);
+        mUrl = String.format("%s#%i", mThread.getUrl(),mPostId);
+        mFile = mHasFile ? File.NewFile(this, mData):null;
 
     }
 
@@ -45,47 +50,47 @@ public class Post {
         return new Post(thread, data);
     }
 
-    public int getmPostId() {
+    public int getPostId() {
         return mPostId;
     }
 
-    public int getmPosterId() {
+    public int getPosterId() {
         return mPosterId;
     }
 
-    public String getmPosterName() {
+    public String getPosterName() {
         return mPosterName;
     }
 
-    public String getmPosterEmail() {
+    public String getPosterEmail() {
         return mPosterEmail;
     }
 
-    public String getmPostSubject() {
+    public String getPostSubject() {
         return mPostSubject;
     }
 
-    public String getmPostComment() {
+    public String getPostComment() {
         return mPostComment;
     }
 
-    public Boolean getmIsOP() {
+    public Boolean getIsOP() {
         return mIsOP;
     }
 
-    public String getmUrl() {
+    public String getUrl() {
         return mUrl;
     }
 
-    public Thread getmThread() {
+    public Thread getThread() {
         return mThread;
     }
 
-    public JSONObject getmData() {
+    public JSONObject getData() {
         return mData;
     }
 
-    public Url getmUrlGenerator() {
+    public Url getUrlGenerator() {
         return mUrlGenerator;
     }
 }
