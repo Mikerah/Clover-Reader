@@ -22,7 +22,7 @@ public class UrlTest {
     @Test
     public void UrlTest_GetBoardList() {
         Url urlTestObj = Url.UrlGenerator("b");
-        String boardList = urlTestObj.getBoardList();
+        String boardList = Url.getBoardList();
         Assert.assertNotNull(boardList);
 
     }
@@ -79,7 +79,7 @@ public class UrlTest {
     @Test
     public void UrlTest_GetUrlMap() {
         Url urlTestObj = Url.UrlGenerator("b");
-        Map<String, Map<String,String>> url = urlTestObj.getUrl();
+        Map<String, Map<String,String>> url = Url.getUrl();
         Assert.assertNotNull(url);
     }
 }

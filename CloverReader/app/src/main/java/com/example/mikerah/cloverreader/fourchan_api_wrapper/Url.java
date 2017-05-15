@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class Url {
     private String mBoardName;
-    private Map<String, Map<String, String>> mUrl;
+    private static Map<String, Map<String, String>> mUrl;
 
     private Url(String boardName) {
         this.mBoardName = boardName;
@@ -29,7 +29,7 @@ public class Url {
 
         // Values for Domain hashtable
         String api = "https://a.4cdn.org"; // API Subdomain
-        String boards = "https://boards.4cdn.org"; // HTML subdomain
+        String boards = "https://boards.4chan.org"; // HTML subdomain
         String file = "https://i.4cdn.org"; // Image host
         String staticHost = "https://s.4cdn.org"; // Static host
 
@@ -86,7 +86,11 @@ public class Url {
         return new Url(boardName);
     }
 
-    public String getBoardList(){
+    public String getBoardUrl() {
+        return mUrl.get("api") + mBoardName;
+    }
+
+    public static String getBoardList(){
         /*
         Create boards listing URL
          */
@@ -142,11 +146,12 @@ public class Url {
         return String.format(mUrl.get("data").get("thumbs"), mBoardName, tim);
     }
 
-    public Map<String, Map<String,String>> getUrl(){
+    public static Map<String, Map<String,String>> getUrl(){
         /*
         Retrieve Hashtable of URLs.
          */
         return mUrl;
     }
+
 
 }

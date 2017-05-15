@@ -31,7 +31,7 @@ public class File {
     private File(Post post, JSONObject data) {
         mPost = post;
         mData = data;
-        mUrl = Url(mPost.getThread().getBoard().getBoardName());
+        mUrl = Url.UrlGenerator(mPost.getThread().getBoard().getBoardName());
         try {
             mMd5Hash = Base64.decode(mData.getString("md5"),Base64.DEFAULT).toString();
             mMd5HashHex = String.format("%H", mMd5Hash);
@@ -41,7 +41,7 @@ public class File {
             mFileSize = mData.getInt("fsize");
             mFileWidth = mData.getInt("w");
             mFileHeight = mData.getInt("h");
-            mIsFileDeleted = (mData.getInt("filedeleted") == 1)? true:false;
+            mIsFileDeleted = (mData.getInt("filedeleted") == 1);
             mFileThumbnailHeight = mData.getInt("tn_h");
             mFileThumbnailWidth = mData.getInt("tn_w");
             mFileThumbnailName = String.format("%ss.jpg",mData.getString("tim"));
@@ -55,6 +55,67 @@ public class File {
         return new File(post, data);
     }
 
+    public Post getPost() {
+        return mPost;
+    }
 
+    public JSONObject getData() {
+        return mData;
+    }
 
+    public Url getUrl() {
+        return mUrl;
+    }
+
+    public String getMd5Hash() {
+        return mMd5Hash;
+    }
+
+    public String getMd5HashHex() {
+        return mMd5HashHex;
+    }
+
+    public String getFilename() {
+        return mFilename;
+    }
+
+    public String getFileUrl() {
+        return mFileUrl;
+    }
+
+    public String getFileExtension() {
+        return mFileExtension;
+    }
+
+    public int getFileSize() {
+        return mFileSize;
+    }
+
+    public int getFileWidth() {
+        return mFileWidth;
+    }
+
+    public int getFileHeight() {
+        return mFileHeight;
+    }
+
+    public boolean isIsFileDeleted() {
+        return mIsFileDeleted;
+    }
+
+    public int getFileThumbnailWidth() {
+        return mFileThumbnailWidth;
+    }
+
+    public int getFileThumbnailHeight() {
+        return mFileThumbnailHeight;
+    }
+
+    public String getFileThumbnailName() {
+        return mFileThumbnailName;
+    }
+
+    public String getFileThumbnailUrl() {
+        return mFileThumbnailUrl;
+    }
 }

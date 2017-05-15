@@ -14,8 +14,8 @@ public class Post {
     private String mPosterEmail;
     private String mPostSubject;
     private String mPostComment;
-    private Boolean mIsOP;
-    private Boolean mHasFile;
+    private boolean mIsOP;
+    private boolean mHasFile;
     private String mUrl;
     private Thread mThread;
     private JSONObject mData;
@@ -25,7 +25,7 @@ public class Post {
     private Post(Thread thread, JSONObject data){
         mThread = thread;
         mData = data;
-        mUrlGenerator = Url(this.mThread.getBoard().getBoardName());
+        mUrlGenerator = Url.UrlGenerator(this.mThread.getBoard().getBoardName());
         mIsOP = mThread.getTopic().equals(this);
         try {
             mPostId = Integer.parseInt(mData.getString("no"));
@@ -92,5 +92,13 @@ public class Post {
 
     public Url getUrlGenerator() {
         return mUrlGenerator;
+    }
+
+    public boolean hasFile() {
+        return mHasFile;
+    }
+
+    public File getFile() {
+        return mFile;
     }
 }
