@@ -1,6 +1,10 @@
 package com.example.mikerah.cloverreader.fourchan_api_wrapper;
 
+import net.dongliu.requests.Requests;
+
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +21,9 @@ public class Thread {
     private boolean mIsAtBumpLimit;
     private boolean mIsAtImgLimit;
     private boolean mIs404;
-    private int mNumberOfCustomSpoilers;
     private Post mTopic;
     private List<Post> mListOfPosts;
+
     private String mUrl;
     private Board mBoard;
     private int mId;
@@ -43,6 +47,7 @@ public class Thread {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        fromJSON();
 
     }
 
@@ -54,8 +59,11 @@ public class Thread {
         return mListOfPosts.size();
     }
 
-
     public String getUrl() {
+        return mUrl;
+    }
+
+    public String getThreadUrl() {
         return mUrl;
     }
 
@@ -141,14 +149,48 @@ public class Thread {
     }
 
     public int update() {
+        int numberOfNewPosts = 0;
         if (mIs404) {
             return 0;
         }
+
+        JSONObject metadata;
+        try {
+            metadata = (JSONObject) new JSONObject(Requests.get(mUrl).send().readToText());
+            JSONArray posts = (JSONArray) metadata.get("posts");
+            if(mListOfPosts.size() == posts.length()) {
+                return 0;
+            }
+            for(int i=0; mListOfPosts.size() < posts.length(); i++) {
+                mListOfPosts.add(Post.NewPost(this, (JSONObject)posts.get(i)));
+                numberOfNewPosts++;
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return numberOfNewPosts;
+
 
     }
 
     public boolean is404() { return mIs404;}
 
+    private void fromJSON() {
+        JSONObject metadata;
+        try {
+            metadata = new JSONObject(Requests.get(mUrl).send().readToText());
 
+            JSONArray posts = (JSONArray) metadata.get("posts");
+            mTopic = Post.NewPost(this,(JSONObject)posts.get(0));
+            for(int i=1; i < posts.length();i++){
+                mListOfPosts.add(i, Post.NewPost(this, (JSONObject)posts.get
+                        (i)));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }

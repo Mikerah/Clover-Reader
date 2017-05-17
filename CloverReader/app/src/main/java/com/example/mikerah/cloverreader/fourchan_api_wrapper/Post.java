@@ -46,7 +46,7 @@ public class Post {
 
     }
 
-    public Post NewPost(Thread thread, JSONObject data){
+    public static Post NewPost(Thread thread, JSONObject data){
         return new Post(thread, data);
     }
 
