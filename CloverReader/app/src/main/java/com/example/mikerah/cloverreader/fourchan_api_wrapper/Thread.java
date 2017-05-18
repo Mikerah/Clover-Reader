@@ -39,11 +39,15 @@ public class Thread {
         mListOfPosts = new ArrayList<>();
         mListOfPosts.add(mTopic);
         try {
-            mIsClosed = mTopic.getData().get("closed") == 1;
-            mIsSticky = mTopic.getData().get("sticky") == 1;
-            mIsArchived = mTopic.getData().get("archived") == 1;
-            mIsAtImgLimit = mTopic.getData().get("imagelimit") == 1;
-            mIsAtBumpLimit = mTopic.getData().get("bumplimit") == 1;
+            mIsClosed = Integer.parseInt(mTopic.getData().get("closed").toString()) == 1;
+            mIsSticky = Integer.parseInt(mTopic.getData().get("sticky").toString())
+                    == 1;
+            mIsArchived = Integer.parseInt(mTopic.getData().get("archived").toString())
+                    == 1;
+            mIsAtImgLimit = Integer.parseInt(mTopic.getData().get
+                    ("imagelimit").toString()) == 1;
+            mIsAtBumpLimit = Integer.parseInt(mTopic.getData().get
+                    ("bumplimit").toString()) == 1;
         } catch (JSONException e) {
             e.printStackTrace();
         }

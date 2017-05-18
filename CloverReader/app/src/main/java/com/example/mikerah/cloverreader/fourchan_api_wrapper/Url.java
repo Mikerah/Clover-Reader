@@ -13,9 +13,7 @@ public class Url {
     private String mBoardName;
     private static Map<String, Map<String, String>> mUrl;
 
-    private Url(String boardName) {
-        this.mBoardName = boardName;
-
+    private static void createUrlMap() {
         Map<String, String> domain;
         Hashtable<String, Map<String, String>> template;
         Map<String, String> listing;
@@ -47,7 +45,7 @@ public class Url {
         file = domain.get("file") + "/%s/%s%s";
         String thumbs = domain.get("thumbs") + "/%s/%ss.jpg";
         staticHost = domain.get("static") + "/image/%s";
-        
+
         Map<String,String> apiHashtable = new Hashtable<>();
         apiHashtable.put("board", board_api);
         apiHashtable.put("thread", thread_api);
@@ -66,7 +64,7 @@ public class Url {
         template.put("data", dataHashtable);
 
         // Values for Listing Hashtable
-        String boardList = domain.get("api") + "/board.json";
+        String boardList = domain.get("api") + "/boards.json";
         String threadList = domain.get("api") + "/%s/threads.json";
         String archivedThreadList = domain.get("api") + "/%s/archive.json";
         String catalog = domain.get("api") + "/%s/catalog.json";
@@ -79,7 +77,10 @@ public class Url {
         mUrl = template;
         mUrl.put("domain", domain);
         mUrl.put("listing", listing);
+    }
 
+    private Url(String boardName) {
+        this.mBoardName = boardName;
     }
 
     public static Url UrlGenerator(String boardName) {
@@ -94,6 +95,7 @@ public class Url {
         /*
         Create boards listing URL
          */
+        createUrlMap();
         return mUrl.get("listing").get("boardList");
     }
 

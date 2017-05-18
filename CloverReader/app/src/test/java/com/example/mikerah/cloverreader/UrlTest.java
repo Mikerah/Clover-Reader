@@ -21,7 +21,6 @@ public class UrlTest {
 
     @Test
     public void UrlTest_GetBoardList() {
-        Url urlTestObj = Url.UrlGenerator("b");
         String boardList = Url.getBoardList();
         Assert.assertNotNull(boardList);
 

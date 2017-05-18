@@ -37,6 +37,7 @@ public class Board {
     }
 
     private String mBoardName;
+    private String mBoardTitle;
     private Url mUrlGenerator;
     private String mBoardUrl;
     private Map<Integer, Thread> mThreadCache;
@@ -56,6 +57,8 @@ public class Board {
                 break;
             }
         }
+
+        mBoardTitle = mBoardMetadata.getString("title");
     }
 
     public static Board newBoard(String boardName) {
@@ -120,6 +123,10 @@ public class Board {
 
     public String getBoardName() {
         return mBoardName;
+    }
+
+    public String getBoardTitle() {
+        return mBoardTitle;
     }
 
     public Thread getThread(int threadId, boolean updateCached) {
@@ -196,4 +203,5 @@ public class Board {
 
         return allThreads;
     }
+
 }
