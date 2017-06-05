@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.example.mikerah.cloverreader.fourchan_api_wrapper.Board;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -37,7 +39,7 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_board,container,false);
+        View view = inflater.inflate(R.layout.activity_main,container,false);
         mBoardGridView = (GridView) view.findViewById(R.id.boards_grid_view);
 
         new GetBoardTitlesTask().execute();

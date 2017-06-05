@@ -1,5 +1,10 @@
 package com.example.mikerah.cloverreader.fourchan_api_wrapper;
 
+import android.os.health.SystemHealthManager;
+import android.util.Log;
+
+import junit.framework.Assert;
+
 import net.dongliu.requests.RawResponse;
 import net.dongliu.requests.RequestBuilder;
 import net.dongliu.requests.Requests;
@@ -25,15 +30,21 @@ import static android.R.attr.id;
  */
 
 public class Board {
-    private static JSONObject mMetadata;
-    private static void fetchBoardsMetadata(){
+    private static JSONObject mMetadata = ChanHelper.getJSONFromUrl(Url.getBoardList());
+
+    public static JSONObject getMetadata() {
+        return mMetadata;
+    }
+
+    public static JSONObject fetchBoardsMetadata(){
         if(mMetadata == null) {
             try {
-                mMetadata = new JSONObject(Requests.get(Url.getBoardList()).send().readToText());
-            } catch (JSONException e) {
+                mMetadata = ChanHelper.getJSONFromUrl(Url.getBoardList());
+            } catch (NullPointerException e) {
                 e.printStackTrace();
             }
         }
+        return mMetadata;
     }
 
     private String mBoardName;
@@ -49,16 +60,14 @@ public class Board {
         mBoardUrl = mUrlGenerator.getBoardUrl();
         mThreadCache = new HashMap<>();
 
-        fetchBoardsMetadata();
-        JSONArray boards = (JSONArray) mMetadata.get("boards");
+        JSONArray boards = mMetadata.getJSONArray("boards");
         for(int i=0; i<boards.length();i++){
             mBoardMetadata = (JSONObject) boards.get(i);
             if(mBoardMetadata.get("board").equals(mBoardName)) {
+                mBoardTitle = mBoardMetadata.getString("title");
                 break;
             }
         }
-
-        mBoardTitle = mBoardMetadata.getString("title");
     }
 
     public static Board newBoard(String boardName) {
@@ -81,17 +90,18 @@ public class Board {
 
     public static List<Board> getListOfAllBoardObjs() {
         List<Board> allBoards = new ArrayList<>();
-        fetchBoardsMetadata();
+        JSONObject metadata = fetchBoardsMetadata();
         JSONArray boards = null;
         try {
-            boards = (JSONArray) mMetadata.get("boards");
+            boards = (JSONArray) metadata.get("boards");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        for(int i=0; i<boards.length();i++){
+
+        for(int i=0; i < boards.length();i++){
             JSONObject board;
             try {
-                board = (JSONObject) boards.get(i);
+                board = boards.getJSONObject(i);
                 allBoards.add(i, newBoard(board.getString("board")));
             } catch (JSONException e) {
                 e.printStackTrace();
