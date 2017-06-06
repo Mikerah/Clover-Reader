@@ -1,5 +1,7 @@
 package com.example.mikerah.cloverreader.fourchan_api_wrapper;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.os.health.SystemHealthManager;
 import android.util.Log;
 
@@ -29,8 +31,9 @@ import static android.R.attr.id;
  * Created by Mikerah on 4/30/2017.
  */
 
-public class Board {
-    private static JSONObject mMetadata = ChanHelper.getJSONFromUrl(Url.getBoardList());
+public class Board implements Parcelable{
+    private static JSONObject mMetadata = (JSONObject) ChanHelper.getJSONFromUrl(Url
+            .getBoardList(), false);
 
     public static JSONObject getMetadata() {
         return mMetadata;
@@ -39,7 +42,8 @@ public class Board {
     public static JSONObject fetchBoardsMetadata(){
         if(mMetadata == null) {
             try {
-                mMetadata = ChanHelper.getJSONFromUrl(Url.getBoardList());
+                mMetadata = (JSONObject) ChanHelper.getJSONFromUrl(Url
+                        .getBoardList(), false);
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
@@ -114,7 +118,8 @@ public class Board {
         List<Integer> threadIds = new ArrayList<>();
         JSONArray jsonObject;
         try {
-            jsonObject = new JSONArray(Requests.get(mUrlGenerator.getThreadList()).send().readToText());
+            jsonObject = (JSONArray) ChanHelper.getJSONFromUrl(mUrlGenerator
+                    .getThreadList(), true);
             for(int i=0; i<jsonObject.length(); i++){
                 JSONObject page = (JSONObject) jsonObject.get(i);
                 JSONArray pageArray = (JSONArray) page.get("threads");
@@ -140,6 +145,7 @@ public class Board {
     }
 
     public Thread getThread(int threadId, boolean updateCached) {
+
         // Check if thread is already cached
         Thread cachedThread = mThreadCache.get(threadId);
         if(cachedThread == null){
@@ -166,12 +172,12 @@ public class Board {
         return exists;
     }
 
-    public List<Thread> getThread(int boardPage) {
+    public List<Thread> getThreads(int boardPage) {
         List<Thread> listOfThreadsOnPage = new ArrayList<>();
         JSONObject jsonObject;
         try {
-            jsonObject = new JSONObject(Requests.get(mUrlGenerator
-                    .getBoardPageUrl(Integer.toString(boardPage))).send().readToText());
+            jsonObject = (JSONObject) ChanHelper.getJSONFromUrl(mUrlGenerator
+                    .getBoardPageUrl(Integer.toString(boardPage)), false);
             JSONArray threads = (JSONArray) jsonObject.get("threads");
             for(int i=0; i<threads.length(); i++) {
                 JSONArray posts = (JSONArray) ((JSONObject) threads.get(i))
@@ -191,8 +197,8 @@ public class Board {
         List<Thread> allThreads = new ArrayList<>();
         JSONArray jsonArray;
         try {
-            jsonArray = new JSONArray(Requests.get(mUrlGenerator
-                    .getThreadList()).send().readToText());
+            jsonArray = (JSONArray) ChanHelper.getJSONFromUrl(mUrlGenerator
+                    .getThreadList(), true);
 
             for(int i=0; i<jsonArray.length();i++){
                 JSONObject page = (JSONObject) jsonArray.get(i);
@@ -214,4 +220,36 @@ public class Board {
         return allThreads;
     }
 
+    /*
+    Parcelling code
+     */
+
+    public Board(Parcel in) {
+        String[] data = new String[1];
+
+        in.readStringArray(data);
+
+        this.mBoardName = data[0];
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeStringArray(new String[] {this.mBoardName});
+    }
+
+    public static final Parcelable.Creator<Board> CREATOR = new Parcelable
+            .Creator<Board>() {
+        public Board createFromParcel(Parcel in) {
+            return new Board(in);
+        }
+
+        public Board[] newArray(int size) {
+            return new Board[size];
+        }
+    };
 }

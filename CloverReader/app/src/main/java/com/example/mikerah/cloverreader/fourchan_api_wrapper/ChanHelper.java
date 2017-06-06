@@ -4,6 +4,7 @@ import android.util.Log;
 
 import net.dongliu.requests.Requests;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,10 +22,9 @@ import java.net.URL;
 
 public class ChanHelper {
 
-    public static JSONObject getJSONFromUrl(String url) {
+    public static Object getJSONFromUrl(String url, boolean isJsonArray) {
         HttpURLConnection connection = null;
         BufferedReader reader = null;
-        JSONObject jsonObject = null;
 
         try {
             URL u = new URL(url);
@@ -43,8 +43,13 @@ public class ChanHelper {
                 Log.d("Response: ", "> " + line);
             }
 
-            jsonObject = new JSONObject(buffer.toString());
-            return jsonObject;
+            if(!isJsonArray) {
+                JSONObject jsonObject = new JSONObject(buffer.toString());
+                return  jsonObject;
+            } else {
+                JSONArray jsonArray = new JSONArray(buffer.toString());
+                return jsonArray;
+            }
 
 
         } catch (MalformedURLException e) {

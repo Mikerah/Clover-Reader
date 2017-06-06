@@ -183,7 +183,7 @@ public class Thread {
     private void fromJSON() {
         JSONObject metadata;
         try {
-            metadata = new JSONObject(Requests.get(mUrl).send().readToText());
+            metadata = (JSONObject) ChanHelper.getJSONFromUrl(mUrl, false);
 
             JSONArray posts = (JSONArray) metadata.get("posts");
             mTopic = Post.NewPost(this,(JSONObject)posts.get(0));

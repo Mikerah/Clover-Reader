@@ -4,11 +4,13 @@ import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.mikerah.cloverreader.fourchan_api_wrapper.Board;
@@ -23,7 +25,7 @@ import java.util.List;
 
 public class MainFragment extends Fragment {
 
-    private GridView mBoardGridView;
+    private RecyclerView mRecyclerView;
 
     public static MainFragment newMainFragment() {
         return new MainFragment();
@@ -40,64 +42,72 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.activity_main,container,false);
-        mBoardGridView = (GridView) view.findViewById(R.id.boards_grid_view);
-
-        new GetBoardTitlesTask().execute();
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_boards_recycler_view);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        new GetBoardsTask().execute();
 
         return view;
     }
 
-    private class BoardAdapter extends BaseAdapter {
+    private class BoardHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        private Button mButton;
+        private Board mBoard;
 
-        private Context mContext;
-        private List<String> mBoardTitles;
+        public BoardHolder(LayoutInflater inflater, ViewGroup container) {
+            super(inflater.inflate(R.layout.list_item_board, container, false));
 
-        public BoardAdapter(Context c, List<String> boardTitles) {
-            mContext = c;
-            mBoardTitles = boardTitles;
+            mButton = (Button) itemView.findViewById(R.id
+                    .list_item_board_button);
         }
 
-
-        @Override
-        public int getCount() {
-            return mBoardTitles.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return position;
+        public void bindBoard(Board board) {
+            mBoard = board;
+            mButton.setText(board.getBoardTitle() + "\n\\" + board
+                    .getBoardName());
         }
 
         @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            TextView textView;
-            if(convertView == null) {
-                textView = new TextView(mContext);
-            } else {
-                textView = (TextView) convertView;
-            }
-
-            textView.setText(mBoardTitles.get(position));
-            return textView;
+        public void onClick(View v) {
+            startActivity(new BoardActivity().newIntent(getActivity(), mBoard));
         }
     }
 
-    private class GetBoardTitlesTask extends AsyncTask<Void,Void,List<String>> {
+    private class BoardAdapter extends RecyclerView.Adapter<BoardHolder> {
+        private List<Board> mBoards;
 
-        @Override
-        protected List<String> doInBackground(Void... params) {
-            List<String> boardTitles = CloverHelper.getBoardTitles();
-            return boardTitles;
+        public BoardAdapter(List<Board> boards) {
+            mBoards = boards;
         }
 
         @Override
-        protected void onPostExecute(List<String> boardTitles) {
-            mBoardGridView.setAdapter(new BoardAdapter(getActivity(), boardTitles));
+        public BoardHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            return new BoardHolder(inflater,parent);
+        }
+
+        @Override
+        public void onBindViewHolder(BoardHolder boardHolder, int position) {
+            Board board = mBoards.get(position);
+            boardHolder.bindBoard(board);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mBoards.size();
+        }
+    }
+
+    private class GetBoardsTask extends AsyncTask<Void,Void,List<Board>> {
+
+        @Override
+        protected List<Board> doInBackground(Void... params) {
+            List<Board> boards = Board.getListOfAllBoardObjs();
+            return boards;
+        }
+
+        @Override
+        protected void onPostExecute(List<Board> boards) {
+            mRecyclerView.setAdapter(new BoardAdapter(boards));
 
         }
     }
