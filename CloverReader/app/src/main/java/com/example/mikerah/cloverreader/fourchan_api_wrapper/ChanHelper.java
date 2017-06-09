@@ -7,6 +7,8 @@ import net.dongliu.requests.Requests;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,7 +42,6 @@ public class ChanHelper {
 
             while( (line = reader.readLine()) != null){
                 buffer.append(line+"\n");
-                Log.d("Response: ", "> " + line);
             }
 
             if(!isJsonArray) {
@@ -71,5 +72,16 @@ public class ChanHelper {
             }
         }
         return null;
+    }
+
+    public static String htmlParser(String text) {
+        try {
+            Document doc = Jsoup.parse(text);
+            String cleanedText = doc.body().text();
+            return cleanedText;
+        } catch (Exception e) {
+            return text;
+        }
+
     }
 }

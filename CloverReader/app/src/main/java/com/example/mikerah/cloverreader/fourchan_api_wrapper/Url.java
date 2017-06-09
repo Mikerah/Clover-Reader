@@ -1,5 +1,7 @@
 package com.example.mikerah.cloverreader.fourchan_api_wrapper;
 
+import android.util.Log;
+
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -80,6 +82,7 @@ public class Url {
     }
 
     private Url(String boardName) {
+        createUrlMap();
         this.mBoardName = boardName;
     }
 
@@ -152,6 +155,7 @@ public class Url {
         /*
         Retrieve Hashtable of URLs.
          */
+        createUrlMap();
         return mUrl;
     }
 

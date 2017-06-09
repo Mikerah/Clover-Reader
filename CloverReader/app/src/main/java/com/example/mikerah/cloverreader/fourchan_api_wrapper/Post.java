@@ -1,7 +1,13 @@
 package com.example.mikerah.cloverreader.fourchan_api_wrapper;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.nio.charset.IllegalCharsetNameException;
 
 /**
  * Created by Mikerah on 5/1/2017.
@@ -9,12 +15,9 @@ import org.json.JSONObject;
 
 public class Post {
     private int mPostId;
-    private int mPosterId;
     private String mPosterName;
-    private String mPosterEmail;
     private String mPostSubject;
     private String mPostComment;
-    private boolean mIsOP;
     private boolean mHasFile;
     private String mUrl;
     private Thread mThread;
@@ -26,22 +29,19 @@ public class Post {
         mThread = thread;
         mData = data;
         mUrlGenerator = Url.UrlGenerator(this.mThread.getBoard().getBoardName());
-        mIsOP = mThread.getTopic().equals(this);
         try {
             mPostId = Integer.parseInt(mData.getString("no"));
-            mPosterId = Integer.parseInt(mData.getString("id"));
             mPosterName = mData.getString("name");
-            mPosterEmail = mData.getString("email");
             mPostSubject = mData.getString("sub");
             mPostComment = mData.getString("com");
-            mHasFile = mData.getBoolean("filename");
+            mHasFile = mData.has("filename");
 
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        mUrl = String.format("%s#%i", mThread.getUrl(),mPostId);
+        mUrl = String.format("%s#%d", mThread.getUrl(),mPostId);
         mFile = mHasFile ? File.NewFile(this, mData):null;
 
     }
@@ -54,28 +54,21 @@ public class Post {
         return mPostId;
     }
 
-    public int getPosterId() {
-        return mPosterId;
-    }
-
     public String getPosterName() {
         return mPosterName;
     }
 
-    public String getPosterEmail() {
-        return mPosterEmail;
-    }
 
     public String getPostSubject() {
-        return mPostSubject;
+        return ChanHelper.htmlParser(mPostSubject);
     }
 
     public String getPostComment() {
-        return mPostComment;
+        return ChanHelper.htmlParser(mPostComment);
     }
 
-    public Boolean getIsOP() {
-        return mIsOP;
+    public Boolean isOP() {
+        return mThread.getTopic().equals(this);
     }
 
     public String getUrl() {

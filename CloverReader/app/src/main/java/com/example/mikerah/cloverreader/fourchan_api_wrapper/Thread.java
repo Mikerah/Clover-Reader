@@ -1,5 +1,7 @@
 package com.example.mikerah.cloverreader.fourchan_api_wrapper;
 
+import android.util.Log;
+
 import net.dongliu.requests.Requests;
 
 import org.json.JSONArray;
@@ -15,14 +17,9 @@ import java.util.List;
 
 public class Thread {
 
-    private boolean mIsClosed;
-    private boolean mIsSticky;
-    private boolean mIsArchived;
-    private boolean mIsAtBumpLimit;
-    private boolean mIsAtImgLimit;
     private boolean mIs404;
     private Post mTopic;
-    private List<Post> mListOfPosts;
+    private List<Post> mListOfPosts = new ArrayList<>();
 
     private String mUrl;
     private Board mBoard;
@@ -34,24 +31,9 @@ public class Thread {
         mId = id;
         mUrlGenerator = Url.UrlGenerator(board.getBoardName());
         mUrl = mUrlGenerator.getApiThreadUrl(Integer.toString(mId));
-        mTopic = null;
-        mIs404 = false;
-        mListOfPosts = new ArrayList<>();
-        mListOfPosts.add(mTopic);
-        try {
-            mIsClosed = Integer.parseInt(mTopic.getData().get("closed").toString()) == 1;
-            mIsSticky = Integer.parseInt(mTopic.getData().get("sticky").toString())
-                    == 1;
-            mIsArchived = Integer.parseInt(mTopic.getData().get("archived").toString())
-                    == 1;
-            mIsAtImgLimit = Integer.parseInt(mTopic.getData().get
-                    ("imagelimit").toString()) == 1;
-            mIsAtBumpLimit = Integer.parseInt(mTopic.getData().get
-                    ("bumplimit").toString()) == 1;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        mListOfPosts.add(0,mTopic);
         fromJSON();
+        mIs404 = false;
 
     }
 

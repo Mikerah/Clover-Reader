@@ -14,13 +14,14 @@ public class BoardActivity extends SingleFragmentActivity {
 
     public static Intent newIntent(Context context, Board board) {
         Intent intent = new Intent(context, BoardActivity.class);
-        intent.putExtra("Board", board);
+        intent.putExtra("Board", board.getBoardName());
         return intent;
     }
 
     @Override
     protected Fragment createFragment() {
-        return BoardFragment.newBoardFragment();
+        String boardName = getIntent().getStringExtra("Board");
+        return BoardFragment.newBoardFragment(boardName);
     }
 
 }

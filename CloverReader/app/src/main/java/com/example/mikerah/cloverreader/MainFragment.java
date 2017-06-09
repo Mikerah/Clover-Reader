@@ -1,5 +1,6 @@
 package com.example.mikerah.cloverreader;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.content.Context;
@@ -34,6 +35,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        new GetBoardsTask().execute();
         setRetainInstance(true);
     }
 
@@ -44,7 +46,6 @@ public class MainFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_main,container,false);
         mRecyclerView = (RecyclerView) view.findViewById(R.id.fragment_boards_recycler_view);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-        new GetBoardsTask().execute();
 
         return view;
     }
@@ -58,6 +59,7 @@ public class MainFragment extends Fragment {
 
             mButton = (Button) itemView.findViewById(R.id
                     .list_item_board_button);
+            mButton.setOnClickListener(this);
         }
 
         public void bindBoard(Board board) {
@@ -68,7 +70,8 @@ public class MainFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            startActivity(new BoardActivity().newIntent(getActivity(), mBoard));
+            Intent i = BoardActivity.newIntent(getActivity(), mBoard);
+            startActivity(i);
         }
     }
 

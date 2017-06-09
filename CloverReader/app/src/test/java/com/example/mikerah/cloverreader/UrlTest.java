@@ -77,8 +77,9 @@ public class UrlTest {
 
     @Test
     public void UrlTest_GetUrlMap() {
-        Url urlTestObj = Url.UrlGenerator("b");
+        //Url urlTestObj = Url.UrlGenerator("b");
         Map<String, Map<String,String>> url = Url.getUrl();
+        System.out.print(url.get("data").get("thumbs"));
         Assert.assertNotNull(url);
     }
 }

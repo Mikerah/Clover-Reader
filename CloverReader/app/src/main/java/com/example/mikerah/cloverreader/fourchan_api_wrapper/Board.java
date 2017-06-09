@@ -31,7 +31,7 @@ import static android.R.attr.id;
  * Created by Mikerah on 4/30/2017.
  */
 
-public class Board implements Parcelable{
+public class Board{
     private static JSONObject mMetadata = (JSONObject) ChanHelper.getJSONFromUrl(Url
             .getBoardList(), false);
 
@@ -181,8 +181,8 @@ public class Board implements Parcelable{
             JSONArray threads = (JSONArray) jsonObject.get("threads");
             for(int i=0; i<threads.length(); i++) {
                 JSONArray posts = (JSONArray) ((JSONObject) threads.get(i))
-                        .get("post");
-                listOfThreadsOnPage.add(Thread.newThread(this,(int)(long)(
+                        .get("posts");
+                listOfThreadsOnPage.add(Thread.newThread(this,(int)(
                         (JSONObject)posts.get(0)).get("no")
                 ));
             }
@@ -205,7 +205,7 @@ public class Board implements Parcelable{
                 JSONArray pageArray = (JSONArray) page.get("threads");
                 for(int j=0; j<jsonArray.length();j++) {
                     JSONObject thread = (JSONObject) pageArray.get(j);
-                    int id = (int)(long)thread.get("no");
+                    int id = (int) thread.get("no");
                     Thread newThread = Thread.newThread(this, id);
                     allThreads.add(newThread);
                     mThreadCache.put(id,newThread);
@@ -215,41 +215,6 @@ public class Board implements Parcelable{
             e.printStackTrace();
         }
 
-
-
         return allThreads;
     }
-
-    /*
-    Parcelling code
-     */
-
-    public Board(Parcel in) {
-        String[] data = new String[1];
-
-        in.readStringArray(data);
-
-        this.mBoardName = data[0];
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeStringArray(new String[] {this.mBoardName});
-    }
-
-    public static final Parcelable.Creator<Board> CREATOR = new Parcelable
-            .Creator<Board>() {
-        public Board createFromParcel(Parcel in) {
-            return new Board(in);
-        }
-
-        public Board[] newArray(int size) {
-            return new Board[size];
-        }
-    };
 }
