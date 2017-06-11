@@ -32,7 +32,7 @@ public class Post {
         try {
             mPostId = Integer.parseInt(mData.getString("no"));
             mPosterName = mData.getString("name");
-            mPostSubject = mData.getString("sub");
+            mPostSubject = mData.has("sub") ? mData.getString("sub") : null;
             mPostComment = mData.getString("com");
             mHasFile = mData.has("filename");
 

@@ -42,7 +42,8 @@ public class File {
             mFileSize = mData.getInt("fsize");
             mFileWidth = mData.getInt("w");
             mFileHeight = mData.getInt("h");
-            mIsFileDeleted = (mData.getInt("filedeleted") == 1);
+            mIsFileDeleted = mData.has("filedeleted") && (mData.getInt
+                    ("filedeleted") == 1);
             mFileThumbnailHeight = mData.getInt("tn_h");
             mFileThumbnailWidth = mData.getInt("tn_w");
             mFileThumbnailName = String.format("%ss.jpg",mData.getString("tim"));

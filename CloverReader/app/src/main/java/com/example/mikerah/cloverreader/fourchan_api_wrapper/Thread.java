@@ -49,6 +49,10 @@ public class Thread {
         return mUrl;
     }
 
+    public int getId() {
+        return mId;
+    }
+
     public String getThreadUrl() {
         return mUrl;
     }
@@ -142,7 +146,7 @@ public class Thread {
 
         JSONObject metadata;
         try {
-            metadata = (JSONObject) new JSONObject(Requests.get(mUrl).send().readToText());
+            metadata = new JSONObject(Requests.get(mUrl).send().readToText());
             JSONArray posts = (JSONArray) metadata.get("posts");
             if(mListOfPosts.size() == posts.length()) {
                 return 0;

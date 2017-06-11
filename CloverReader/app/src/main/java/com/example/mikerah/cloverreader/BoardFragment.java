@@ -1,6 +1,7 @@
 package com.example.mikerah.cloverreader;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -101,7 +102,8 @@ public class BoardFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-
+            Intent i = ThreadActivity.newIntent(getActivity(), mBoard, mThread);
+            startActivity(i);
         }
     }
 

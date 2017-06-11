@@ -7,11 +7,16 @@
    <ImageView
        android:id="@+id/post_img"
        android:layout_width="match_parent"
-       android:layout_height="120dp"/>
+       android:layout_height="120dp"
+       android:layout_weight="3"
+       android:adjustViewBounds="true"
+       android:scaleType="centerInside"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
