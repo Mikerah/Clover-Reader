@@ -137,7 +137,7 @@ public class BoardFragment extends Fragment {
 
         @Override
         protected List<Thread> doInBackground(Void... params) {
-            List<Thread> threads = mBoard.getThreads(1);
+            List<Thread> threads = mBoard.getAllThreads();
             return threads;
         }
 
