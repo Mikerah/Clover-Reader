@@ -31,7 +31,6 @@ public class Thread {
         mId = id;
         mUrlGenerator = Url.UrlGenerator(board.getBoardName());
         mUrl = mUrlGenerator.getApiThreadUrl(Integer.toString(mId));
-        mListOfPosts.add(0,mTopic);
         fromJSON();
         mIs404 = false;
 
@@ -173,6 +172,7 @@ public class Thread {
 
             JSONArray posts = (JSONArray) metadata.get("posts");
             mTopic = Post.NewPost(this,(JSONObject)posts.get(0));
+            mListOfPosts.add(0,mTopic);
             for(int i=1; i < posts.length();i++){
                 mListOfPosts.add(i, Post.NewPost(this, (JSONObject)posts.get
                         (i)));

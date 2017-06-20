@@ -5,11 +5,16 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.mikerah.cloverreader.fourchan_api_wrapper.Board;
 import com.example.mikerah.cloverreader.fourchan_api_wrapper.Post;
 import com.example.mikerah.cloverreader.fourchan_api_wrapper.Thread;
@@ -20,7 +25,7 @@ import java.util.List;
 
 public class ThreadFragment extends Fragment {
 
-    private RecyclerView mPosts;
+    private RecyclerView mRecyclerView;
     private Thread mThread;
     private Board mBoard;
 
@@ -32,7 +37,6 @@ public class ThreadFragment extends Fragment {
      * @param threadId Parameter 2.
      * @return A new instance of fragment ThreadFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ThreadFragment newInstance(String boardName, String
             threadId) {
         ThreadFragment fragment = new ThreadFragment();
@@ -63,27 +67,74 @@ public class ThreadFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.activity_thread, container,
                 false);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id
+                .fragment_posts_recycler_view);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.VERTICAL, false));
 
         return view;
     }
 
-    private class GetBoardTask extends AsyncTask<Void, Void, Board> {
+    private class PostHolder extends RecyclerView.ViewHolder implements
+            RecyclerView.OnClickListener {
 
-        String mBoardName;
+        private Post mPost;
 
-        public GetBoardTask(String boardName) {
-            mBoardName = boardName;
+        private ImageView mPic;
+        private TextView mText;
+
+
+        public PostHolder(View postView) {
+            super(postView);
+
+            mPic = (ImageView) postView.findViewById(R.id
+                    .img_for_post_with_pic);
+            mText = (TextView) postView.findViewById(R.id
+                    .text_view_for_post_with_pic);
+        }
+
+        public void bindPostItem(Post post){
+            mPost = post;
+            String text = mPost.getPostComment();
+            mText.setText(text);
+            if(post.hasFile()){
+                Glide.with(getActivity()).load(post.getFile().getFileUrl())
+                        .into(mPic);
+            }
         }
 
         @Override
-        protected Board doInBackground(Void... params) {
-            Board board = Board.newBoard(mBoardName);
-            return board;
+        public void onClick(View v) {
+
+        }
+    }
+
+    private class PostAdapter extends RecyclerView.Adapter<PostHolder> {
+
+        private List<Post> mPosts;
+
+        public PostAdapter(List<Post> posts) {
+            mPosts = posts;
         }
 
         @Override
-        protected void onPostExecute(Board board) {
-            mBoard = board;
+        public PostHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            View view = inflater.inflate(R.layout.list_item_post_with_pic,
+                    parent, false);
+            return new PostHolder(view);
+
+        }
+
+        @Override
+        public void onBindViewHolder(PostHolder holder, int position) {
+            Post post = mPosts.get(position);
+            holder.bindPostItem(post);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mPosts.size();
         }
     }
 
@@ -97,7 +148,7 @@ public class ThreadFragment extends Fragment {
 
         @Override
         protected Thread doInBackground(Void... params) {
-            Thread thread = Thread.newThread(mBoard, mThreadId);
+            Thread thread = mBoard.getThread(mThreadId,true);
             return thread;
         }
 
@@ -105,9 +156,9 @@ public class ThreadFragment extends Fragment {
         protected void onPostExecute(Thread thread) {
             mThread = thread;
             getActivity().setTitle(mBoard.getBoardTitle() + " - " + mThread.getId());
-
         }
     }
+
 
     private class GetPostsTask extends AsyncTask<Void, Void, List<Post>> {
 
@@ -117,6 +168,12 @@ public class ThreadFragment extends Fragment {
             return posts;
         }
 
+        @Override
+        protected void onPostExecute(List<Post> posts) {
+            mRecyclerView.setAdapter(new PostAdapter(posts));
+        }
+
 
     }
+
 }

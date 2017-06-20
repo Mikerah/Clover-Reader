@@ -46,7 +46,6 @@ public class BoardFragment extends Fragment {
         setRetainInstance(true);
 
         mBoard = Board.newBoard(getArguments().getString("Board"));
-        getActivity().setTitle(mBoard.getBoardTitle());
 
         new GetThreadsTask().execute();
     }
@@ -96,7 +95,6 @@ public class BoardFragment extends Fragment {
                 Glide.with(getActivity()).load(thumbnailUrl)
                         .into(mThreadThumbnail);
             }
-
 
         }
 
