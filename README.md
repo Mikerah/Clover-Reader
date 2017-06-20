@@ -1,6 +1,6 @@
 # Clover-Reader
 
-![Alt text](snippet.mp4?raw=true)
+![Alt text](snippet.gif?raw=true)
 
 ## Overview
 CloverReader is my attempt at creating my own 4chan reading Android app. I wanted to create such an app despite the fact that many out there exists is because I don't like the ones out there. However, due to time constraints from other projects, I was not able to complete this app. I've learned a ton while creating app and I don't consider the time spent on this project wasted.
